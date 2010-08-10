@@ -6,11 +6,11 @@ namespace Mvc.TaskUI
 		{
 		}
 
-		public ValidationError(string propertyName, string errorMessage)
+		public ValidationError(string property, string error)
 			: this()
 		{
-			this.Property = propertyName ?? string.Empty;
-			this.Error = errorMessage ?? string.Empty;
+			this.Property = property ?? string.Empty;
+			this.Error = error ?? string.Empty;
 		}
 
 		public string Property { get; set; }

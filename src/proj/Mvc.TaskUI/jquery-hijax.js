@@ -8,7 +8,7 @@
 	options.validationCssClass = options.validationCssClass || "input-validation-error";
 	options.onSubmit = options.onSubmit || function() { };
 	options.onSuccess = options.onSuccess || function() { };
-	options.onValidation = options.onValidation || appendValidationErrors;
+	options.onValidationErrors = options.onValidationErrors || onValidationErrors;
 	options.onRedirect = options.onRedirect || onRedirect;
 	options.onFailure = options.onFailure || onFailure;
 	options.onStatus = options.onStatus || function() { };
@@ -21,15 +21,15 @@
 	{
 		window.location = url;
 	}
-	function appendValidationErrors(errors)
+	function onValidationErrors(errors)
 	{
 		var container = options.errorContainer;
 
 		$.each(errors, function(index, error)
 		{
-			$('#' + error.PropertyName).addClass(options.validationCssClass);
+			$('#' + error.Property).addClass(options.validationCssClass);
 			if (undefined !== container)
-				container.append($(options.errorWrapper) + error.ErrorMessage + $("/" + errorWrapper));
+				container.append($(options.errorWrapper) + error.Error + $("/" + errorWrapper));
 		});
 
 		if (undefined !== container)
@@ -84,7 +84,7 @@
 			{
 				case 200: return options.onSuccess(parseResponseText(xhr));
 				case 399: return options.onRedirect(xhr.getResponseHeader("Location"));
-				case 400: return options.onValidation(parseResponseText(xhr));
+				case 400: return options.onValidationErrors(parseResponseText(xhr));
 				default: return ajax(url, attempt);
 			}
 		} catch (exception) { ajax(url, attempt); }
