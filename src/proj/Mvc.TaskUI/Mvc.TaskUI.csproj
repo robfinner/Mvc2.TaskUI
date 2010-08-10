@@ -42,6 +42,7 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AjaxOnlyAttribute.cs" />
     <Compile Include="JavascriptRedirectResult.cs" />
     <Compile Include="JsonModelErrorResult.cs" />
     <Compile Include="JsonValidationAttribute.cs" />
