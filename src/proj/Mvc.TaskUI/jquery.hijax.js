@@ -11,7 +11,7 @@
 			if (form.onSubmit && false === form.onSubmit())
 				return; // must explictly return false to stop processing
 
-			hideInputErrors(form);
+			form.hideInputErrors ? form.hideInputErrors() : hideInputErrors(form);
 
 			var action = (form.action || window.location).toString();
 			var url = action + (action.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) { var r = Math.random() * 16 | 0, v = c == "x" ? r : r & 0x3 | 0x8; return v.toString(16); }).toUpperCase();
@@ -88,9 +88,6 @@
 	}
 	function hideInputErrors(form)
 	{
-		if (form.hideInputErrors)
-			return form.hideInputErrors();
-
 		$(".hijaxSummary", form).html("");
 		$(":input", form).each(function(i, element)
 		{
