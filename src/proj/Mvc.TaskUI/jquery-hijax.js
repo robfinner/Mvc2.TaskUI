@@ -24,16 +24,23 @@
 	function onValidationErrors(errors)
 	{
 		var container = options.errorContainer;
+		var errors1 = {};
 
 		$.each(errors, function(index, error)
 		{
 			$('#' + error.Property).addClass(options.validationCssClass);
-			if (undefined !== container)
+
+			errors1[error.Property] = error.Error;
+
+			if (container)
 				container.append($(options.errorWrapper) + error.Error + $("/" + errorWrapper));
 		});
 
-		if (undefined !== container)
+		if (container)
 			container.show();
+
+		if (options.validator)
+			options.validator.showErrors(errors1);
 	}
 	function clearValidationErrors()
 	{
@@ -42,7 +49,10 @@
 			$(input).removeClass(options.validationCssClass)
 		});
 
-		if (undefined === options.errorContainer)
+		if (options.validator)
+			options.validator.showErrors();
+
+		if (!options.errorContainer)
 			return;
 
 		options.errorContainer.hide();
@@ -57,7 +67,7 @@
 
 		var continueSubmit = options.onSubmit();
 		if (false === continueSubmit)
-			return;
+			return; // must explictly return false to stop processing
 
 		var action = (form.attr("action") || window.location).toString();
 		var url = action + (action.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) { var r = Math.random() * 16 | 0, v = c == "x" ? r : r & 0x3 | 0x8; return v.toString(16); }).toUpperCase();
@@ -104,6 +114,6 @@
 		if (contentType.indexOf("application/json") < 0)
 			return responseText;
 
-		return (JSON === undefined ? eval(responseText) : JSON.parse(responseText));
+		return (JSON ? eval(responseText) : JSON.parse(responseText));
 	}
 }
