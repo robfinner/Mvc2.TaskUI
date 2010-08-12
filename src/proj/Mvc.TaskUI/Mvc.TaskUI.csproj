@@ -54,9 +54,7 @@
     <Content Include="..\CustomDictionary.xml">
       <Link>Properties\CustomDictionary.xml</Link>
     </Content>
-    <Content Include="jquery-hijax.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="jquery.hijax.js" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
