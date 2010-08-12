@@ -37,7 +37,10 @@
 	}
 	function clearValidationErrors()
 	{
-		$(":input:not(input[type=hidden])").each(function(index, input) { });
+		$(":input").each(function(index, input)
+		{
+			$(input).removeClass(options.validationCssClass)
+		});
 
 		if (undefined === options.errorContainer)
 			return;
