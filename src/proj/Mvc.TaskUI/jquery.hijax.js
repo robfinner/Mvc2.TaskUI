@@ -79,7 +79,7 @@
 		var summary = "";
 		$.each(errors, function(i, error)
 		{
-			var element = $("#" + error.ElementId, form);
+			var element = $(":input[name$=" + error.Property + "]", form);
 			element.addClass("input-validation-error").attr("_title", element.attr("title")).attr("title", error.Message);
 			summary += "<li>" + error.Message + "</li>";
 		});

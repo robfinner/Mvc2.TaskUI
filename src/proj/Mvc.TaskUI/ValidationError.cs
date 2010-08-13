@@ -6,14 +6,14 @@ namespace Mvc.TaskUI
 		{
 		}
 
-		public ValidationError(string property, string error)
+		public ValidationError(string property, string message)
 			: this()
 		{
-			this.ElementId = property ?? string.Empty;
-			this.Message = error ?? string.Empty;
+			this.Property = property ?? string.Empty;
+			this.Message = message ?? string.Empty;
 		}
 
-		public string ElementId { get; set; }
+		public string Property { get; set; }
 		public string Message { get; set; }
 	}
 }
