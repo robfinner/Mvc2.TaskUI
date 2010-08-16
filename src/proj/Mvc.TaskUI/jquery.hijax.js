@@ -84,11 +84,11 @@
 			summary += "<li>" + error.Message + "</li>";
 		});
 
-		$(".hijaxSummary", form).html("<ul>" + summary + "</ul>");
+		$(".hijaxSummary", form).html("<ul>" + summary + "</ul>").show();
 	}
 	function hideInputErrors(form)
 	{
-		$(".hijaxSummary", form).html("");
+		$(".hijaxSummary", form).hide().html("");
 		$(":input", form).each(function(i, element)
 		{
 			element = $(element);

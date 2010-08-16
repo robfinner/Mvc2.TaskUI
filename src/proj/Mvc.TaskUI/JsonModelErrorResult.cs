@@ -6,7 +6,6 @@ namespace Mvc.TaskUI
 	public class JsonModelErrorResult : JsonResult
 	{
 		private const int BadRequestHttpStatusCode = 400;
-		private const string BadRequestHttpStatus = "400 Bad Request";
 		private readonly ModelStateDictionary state;
 
 		public JsonModelErrorResult(ModelStateDictionary state)
@@ -25,17 +24,16 @@ namespace Mvc.TaskUI
 		{
 			this.ContentType = string.Empty; // let the base class append the content type
 			context.HttpContext.Response.StatusCode = BadRequestHttpStatusCode;
-			context.HttpContext.Response.Status = BadRequestHttpStatus;
 
 			this.Data = this.GetModelErrors();
 		}
 		private ICollection<ValidationError> GetModelErrors()
 		{
-			var errors = new LinkedList<ValidationError>();
+			var errors = new List<ValidationError>();
 
 			foreach (var item in this.state)
 				foreach (var error in item.Value.Errors)
-					errors.AddLast(new ValidationError(item.Key, error.ErrorMessage));
+					errors.Add(new ValidationError(item.Key, error.ErrorMessage));
 
 			return errors;
 		}

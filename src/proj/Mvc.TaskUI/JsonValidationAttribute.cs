@@ -10,17 +10,17 @@
 		{
 			base.OnActionExecuting(filterContext);
 
-			var state = GetModelState(filterContext.Controller);
-			if (ModelHasErrors(state) && !this.AlwaysInvokeAction)
-				filterContext.Result = new JsonModelErrorResult(state);
+			var modelState = GetModelState(filterContext.Controller);
+			if (ModelHasErrors(modelState) && !this.AlwaysInvokeAction)
+				filterContext.Result = new JsonModelErrorResult(modelState);
 		}
 		public override void OnActionExecuted(ActionExecutedContext filterContext)
 		{
 			base.OnActionExecuted(filterContext);
 
-			var state = GetModelState(filterContext.Controller);
-			if (ModelHasErrors(state) && filterContext.Result is EmptyResult)
-				filterContext.Result = new JsonModelErrorResult(state);
+			var modelState = GetModelState(filterContext.Controller);
+			if (ModelHasErrors(modelState) && filterContext.Result is EmptyResult)
+				filterContext.Result = new JsonModelErrorResult(modelState);
 		}
 
 		private static ModelStateDictionary GetModelState(ControllerBase controller)
