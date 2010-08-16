@@ -21,7 +21,7 @@
 
 	function ajax(form, url, attempt)
 	{
-		if (++attempt > parseInt(form.attempts || 3)) // max 3 attempts in case of failure
+		if (++attempt > parseInt($(form).attr("attempts") || 3)) // max 3 attempts in case of failure
 			return onFailure(form);
 
 		$.ajax({
@@ -30,7 +30,7 @@
 			dataType: "text",
 			error: function(xhr) { handle(form, xhr, url, attempt); },
 			success: function(data, status, xhr) { handle(form, xhr, url, attempt); },
-			timeout: parseInt(form.timeout || 3500), // 3.5 seconds
+			timeout: parseInt($(form).attr("timeout") || 3500), // 3.5 seconds
 			type: (form.method || "post"),
 			url: url
 		});
