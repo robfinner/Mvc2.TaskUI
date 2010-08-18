@@ -11,6 +11,9 @@
 			if (form.onSubmit && false === form.onSubmit())
 				return; // must explictly return false to stop processing
 
+			if (form.onInit)
+				form.onInit();
+
 			form.hideInputErrors ? form.hideInputErrors() : hideInputErrors(form);
 
 			var action = (form.action || window.location).toString();
@@ -21,8 +24,8 @@
 
 	function ajax(form, url, attempt)
 	{
-		if (++attempt > parseInt($(form).attr("attempts") || 3)) // max 3 attempts in case of failure
-			return onFailure(form);
+		if (form.onStatus)
+			form.onStatus(attempt + 1); // make it a 1-based number
 
 		$.ajax({
 			cache: false,
@@ -37,19 +40,27 @@
 	}
 	function handle(form, xhr, url, attempt)
 	{
+		var retry = false;
+
 		try
 		{
 			switch (xhr.status)
 			{
-				case 200: return form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined;
-				case 399: return onRedirect(form, xhr.getResponseHeader("Location"));
-				case 400: return onInputErrors(form, parseResponse(xhr));
-				default: return ajax(form, url, attempt);
+				case 200: form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined; break;
+				case 399: onRedirect(form, xhr.getResponseHeader("Location")); break;
+				case 400: onInputErrors(form, parseResponse(xhr)); break;
+				default: retry = true;
 			}
-		} catch (exception) { ajax(form, url, attempt); }
+		} catch (exception) { retry = true; }
 
-		if (form.onStatus)
-			form.onStatus(attempt);
+		if (retry && ++attempt <= parseInt($(form).attr("attempts") || 3)) // 3 retries on failure
+			return ajax(form, url, attempt);
+
+		if (retry)
+			onFailure(form);
+
+		if (form.onComplete)
+			form.onComplete();
 	}
 	function parseResponse(xhr)
 	{
