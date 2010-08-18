@@ -3,6 +3,8 @@
 	var forms = $("form.hijax");
 	$.each(forms, function(i, form)
 	{
+		form.requestId = newGuid();
+
 		$(form).submit(function(event)
 		{
 			event.preventDefault();
@@ -16,11 +18,20 @@
 
 			form.hideInputErrors ? form.hideInputErrors() : hideInputErrors(form);
 
-			var action = (form.action || window.location).toString();
-			var url = action + (action.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) { var r = Math.random() * 16 | 0, v = c == "x" ? r : r & 0x3 | 0x8; return v.toString(16); }).toUpperCase();
+			var url = (form.action || window.location).toString();
+			url += (url.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + form.requestId;
 			ajax(form, url, 0);
 		});
 	});
+	function newGuid()
+	{
+		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+			.replace(/[xy]/g, function(c)
+			{
+				var r = Math.random() * 16 | 0, v = c == "x" ? r : r & 0x3 | 0x8;
+				return v.toString(16);
+			}).toUpperCase();
+	}
 
 	function ajax(form, url, attempt)
 	{
@@ -53,11 +64,13 @@
 			}
 		} catch (exception) { retry = true; }
 
-		if (retry && ++attempt <= parseInt($(form).attr("attempts") || 3)) // 3 retries on failure
-			return ajax(form, url, attempt);
+		if (retry && attempt <= parseInt($(form).attr("attempts") || 3)) // 3 retries on failure
+			return ajax(form, url, attempt + 1);
 
 		if (retry)
 			onFailure(form);
+
+		form.requestId = newGuid();
 
 		if (form.onComplete)
 			form.onComplete();
