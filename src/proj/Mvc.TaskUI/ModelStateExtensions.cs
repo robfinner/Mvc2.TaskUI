@@ -6,6 +6,15 @@ namespace Mvc.TaskUI
 
 	public static class ModelStateExtensions
 	{
+		public static void WhenValid(this ModelStateDictionary modelState, Action action)
+		{
+			if (modelState == null || action == null)
+				return;
+
+			if (modelState.IsValid)
+				action();
+		}
+
 		public static void AddModelError<T>(
 			this ModelStateDictionary modelState, Expression<Func<T>> property, string errorMessage)
 		{
