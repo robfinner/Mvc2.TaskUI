@@ -11,7 +11,7 @@
 			event.stopPropagation();
 
 			if (form.onSubmit && false === form.onSubmit())
-				return; // must explictly return false to stop processing
+				return false; // form.onSubmit must explictly return false to stop processing
 
 			if (form.onInit)
 				form.onInit();
