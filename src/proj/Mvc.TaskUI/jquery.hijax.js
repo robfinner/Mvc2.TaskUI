@@ -45,7 +45,7 @@
 			success: function(data, status, xhr) { handle(form, xhr, url, attempt); },
 			timeout: parseInt($(form).attr("timeout") || 3500), // 3.5 seconds
 			type: (form.method || "post"),
-			url: url
+			url: form.hasClass("proxy") ? (form.attr("proxy") || "/proxy/") + "?action=" + escape(url) : url
 		});
 	}
 	function handle(form, xhr, url, attempt)
