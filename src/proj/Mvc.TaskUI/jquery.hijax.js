@@ -31,15 +31,16 @@
 		if (form.onStatus)
 			form.onStatus(attempt + 1); // make it a 1-based number
 
+		var $form = $(form);
 		$.ajax({
 			cache: false,
-			data: $(form).serialize(),
+			data: $form.serialize(),
 			dataType: "text",
 			error: function (xhr) { handle(form, xhr, url, attempt); },
 			success: function (data, status, xhr) { handle(form, xhr, url, attempt); },
-			timeout: parseInt($(form).attr("timeout") || 3500), // 3.5 seconds
+			timeout: parseInt($form.attr("timeout") || 3500), // 3.5 seconds
 			type: (form.method || "post"),
-			url: form.hasClass("proxy") ? (form.attr("proxy") || "/proxy/") + "?action=" + escape(url) : url
+			url: $form.hasClass("proxy") ? ($form.attr("proxy") || "/proxy/") + "?action=" + escape(url) : url
 		});
 	}
 	function handle(form, xhr, url, attempt) {
