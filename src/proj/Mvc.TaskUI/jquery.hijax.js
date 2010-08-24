@@ -1,21 +1,27 @@
 ﻿$(document).ready(function () {
+	var xdBrowser = (window.XDomainRequest || (window.XMLHttpRequest && "withCredentials" in new window.XMLHttpRequest()));
+
 	var forms = $("form.hijax");
 	$.each(forms, function () {
-		this.requestId = newGuid();
 
 		$(this).submit(function (event) {
 			event.preventDefault();
 			event.stopPropagation();
 
+			if (this.requestId)
+				return false;
+
 			if (this.onSubmit && false === this.onSubmit())
 				return false; // this.onSubmit must explictly return false to stop processing
+
+			this.requestId = newGuid(); // form is busy processing another request; avoid duplicate submit.
 
 			if (this.onInit)
 				this.onInit();
 
 			this.hideInputErrors ? this.hideInputErrors() : hideInputErrors(this);
 
-			var url = (this.action || window.location).toString();
+			var url = getAction(this);
 			url += (url.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + this.requestId;
 			ajax(this, url, 0);
 		});
@@ -26,6 +32,20 @@
 				var r = Math.random() * 16 | 0, v = c == "x" ? r : r & 0x3 | 0x8;
 				return v.toString(16);
 			}).toUpperCase();
+	}
+	function getAction(form) {
+		var action = (form.action || "").toString();
+		var currentLocation = window.location;
+		if (action.length === 0)
+			return currentLocation;
+
+		var parsedAction = $("<a />").attr("href", action);
+		if (parsedAction.attr("protocol") === currentLocation.protocol
+			&& parsedAction.attr("hostname") === currentLocation.hostname
+			&& parsedAction.attr("port") === currentLocation.port)
+			return action;
+
+		return xdBrowser ? action : $(form).attr("proxy") || "/proxy/" + "?action=" + escape(action);
 	}
 	function ajax(form, url, attempt) {
 		if (form.onStatus)
@@ -40,7 +60,7 @@
 			success: function (data, status, xhr) { handle(form, xhr, url, attempt); },
 			timeout: parseInt($form.attr("timeout") || 3500), // 3.5 seconds
 			type: (form.method || "post"),
-			url: $form.hasClass("proxy") ? ($form.attr("proxy") || "/proxy/") + "?action=" + escape(url) : url
+			url: url
 		});
 	}
 	function handle(form, xhr, url, attempt) {
@@ -61,7 +81,7 @@
 		if (retry)
 			onFailure(form);
 
-		form.requestId = newGuid();
+		form.requestId = undefined;
 
 		if (form.onComplete)
 			form.onComplete();
@@ -75,7 +95,7 @@
 		if (contentType.indexOf("application/json") < 0)
 			return responseText;
 
-		return (JSON ? JSON.parse(responseText) : eval(responseText));
+		return (window.JSON ? window.JSON.parse(responseText) : eval(responseText));
 	}
 	function onFailure(form) {
 		form.onFailure ? form.onFailure() : window.alert("Whoops!  We messed up!  Don't worry, it's not your fault.  It looks like our system isn't responding correctly right now.  Give it a minute and try again.");
