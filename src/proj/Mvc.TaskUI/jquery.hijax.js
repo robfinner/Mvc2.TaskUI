@@ -1,10 +1,5 @@
 ﻿$(document).ready(function () {
-
-	var isXdBrowser = window.XDomainRequest
-		|| (window.XMLHttpRequest && "withCredentials" in new window.XMLHttpRequest());
-
 	$("form.hijax").each(function () {
-		appendXdProxy(this);
 		$(this).submit(function (event) {
 			event.preventDefault();
 			event.stopPropagation();
@@ -22,37 +17,13 @@
 
 			this.hideInputErrors ? this.hideInputErrors() : hideInputErrors(this);
 
-			var url = (this.action || "").toString();
+			var url = (this.action || "").toString().replace(/^(http(s)?\:)?(.*)$/i, "$3");
 			url += (url.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + this.requestId;
 			ajax(this, url, 0);
 
 			return false;
 		});
 	});
-	function appendXdProxy(form) {
-		var action = (form.action || "").toString();
-		if (action.length === 0)
-			return;
-
-		var $form = $(form);
-		if (isXdBrowser && !$form.hasClass("xdproxy"))
-			return; // by default new browsers will request xd, unless instructed otherwise in the HTML.
-
-		var location = window.location;
-		var parsedAction = $("<a />").attr("href", action);
-		var hostname = parsedAction.attr("hostname");
-		var port = parsedAction.attr("port");
-
-		if (parsedAction.attr("protocol") === location.protocol
-			&& hostname === location.hostname && port === location.port)
-			return;
-
-		port = port === "0" ? "" : ":" + port;
-		var src = $form.attr("proxy") || location.protocol + "//" + hostname + port + "/xdproxy.html";
-		src = src.replace(/^(http(s)?\:)?(.*)$/i, "$3"); // iframe must stay on current protocol
-		form.xdproxy = $("<iframe src='" + src + "'></iframe>").hide().appendTo($form)[0];
-		form.action = action = action.replace(/^(http(s)?\:)?(.*)$/i, "$3"); // stay on current protocol
-	}
 	function newGuid() {
 		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
 			.replace(/[xy]/g, function (c) {
