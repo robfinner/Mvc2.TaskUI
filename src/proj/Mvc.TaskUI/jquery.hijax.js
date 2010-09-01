@@ -37,8 +37,7 @@
 
 		var $form = $(form);
 
-		// TODO: cross browser contentDocument.parentWindow
-		(form.xdproxy ? form.xdproxy.contentWindow.$.ajax : $.ajax)({
+		$.ajax({
 			cache: false,
 			data: $form.serialize(),
 			dataType: "text",
