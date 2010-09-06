@@ -84,7 +84,11 @@
 		form.onFailure ? form.onFailure() : alert("Whoops!  We messed up!  Don't worry, it's not your fault.  It looks like our system isn't responding correctly right now.  Give it a minute and try again.");
 	}
 	function onRedirect(form, url) {
-		form.onRedirect ? form.onRedirect(url) : location = url;
+		if (form.onRedirect)
+			return form.onRedirect(url);
+
+		if (url)
+			location = !window.baseUrl && url.match(/^https?\:/i) ? url : window.baseUrl + url;
 	}
 	function onInputErrors(form, errors) {
 		if (form.onInputErrors)
