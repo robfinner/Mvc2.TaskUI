@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+$(document).ready(function () {
 	$("form.hijax").live("submit", function (event) {
 		event.preventDefault();
 		event.stopPropagation();
