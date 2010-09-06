@@ -1,28 +1,26 @@
 ﻿$(document).ready(function () {
-	$("form.hijax").each(function () {
-		$(this).submit(function (event) {
-			event.preventDefault();
-			event.stopPropagation();
+	$("form.hijax").live("submit", function (event) {
+		event.preventDefault();
+		event.stopPropagation();
 
-			if (this.onSubmit && false === this.onSubmit())
-				return false; // this.onSubmit must explictly return false to stop processing
+		if (this.onSubmit && false === this.onSubmit())
+			return false; // this.onSubmit must explictly return false to stop processing
 
-			if (this.requestId)
-				return false; // form is busy processing another request; avoid duplicate submit.
+		if (this.requestId)
+			return false; // form is busy processing another request; avoid duplicate submit.
 
-			this.requestId = newGuid();
+		this.requestId = newGuid();
 
-			if (this.onInit)
-				this.onInit();
+		if (this.onInit)
+			this.onInit();
 
-			this.hideInputErrors ? this.hideInputErrors() : hideInputErrors(this);
+		this.hideInputErrors ? this.hideInputErrors() : hideInputErrors(this);
 
-			var url = (this.action || "").toString().replace(/^(https?\:)?(.*)$/i, "$2");
-			url += (url.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + this.requestId;
-			ajax(this, url, 0);
+		var url = (this.action || "").toString().replace(/^(https?\:)?(.*)$/i, "$2");
+		url += (url.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + this.requestId;
+		ajax(this, url, 0);
 
-			return false;
-		});
+		return false;
 	});
 
 	function newGuid() {
