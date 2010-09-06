@@ -8,22 +8,23 @@
 				return false; // this.onSubmit must explictly return false to stop processing
 
 			if (this.requestId)
-				return false;
+				return false; // form is busy processing another request; avoid duplicate submit.
 
-			this.requestId = newGuid(); // form is busy processing another request; avoid duplicate submit.
+			this.requestId = newGuid();
 
 			if (this.onInit)
 				this.onInit();
 
 			this.hideInputErrors ? this.hideInputErrors() : hideInputErrors(this);
 
-			var url = (this.action || "").toString().replace(/^(http(s)?\:)?(.*)$/i, "$3");
+			var url = (this.action || "").toString().replace(/^(https?\:)?(.*)$/i, "$2");
 			url += (url.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + this.requestId;
 			ajax(this, url, 0);
 
 			return false;
 		});
 	});
+
 	function newGuid() {
 		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
 			.replace(/[xy]/g, function (c) {
@@ -60,30 +61,30 @@
 			}
 		} catch (exception) { retry = true; }
 
-		if (retry && attempt <= parseInt($(form).attr("attempts") || 3)) // 3 retries on failure
+		var maxAttempts = parseInt($(form).attr("attempts") || 3);
+		if (retry && attempt <= maxAttempts) // 3 retries on failure
 			return ajax(form, url, attempt + 1);
 
+		form.requestId = undefined;
+		
 		if (retry)
 			onFailure(form);
-
-		form.requestId = undefined;
 
 		if (form.onComplete)
 			form.onComplete();
 	}
 	function parseResponse(xhr) {
-		var responseText = xhr.responseText || "";
-		if (responseText.length === 0)
+		if (!xhr.responseText)
 			return "";
 
-		var contentType = (xhr.getResponseHeader("Content-Type") || "").toString();
+		var contentType = (xhr.getResponseHeader("Content-Type") || "").toLowerCase();
 		return (contentType.indexOf("application/json") < 0) ? responseText : $.parseJSON(responseText);
 	}
 	function onFailure(form) {
-		form.onFailure ? form.onFailure() : window.alert("Whoops!  We messed up!  Don't worry, it's not your fault.  It looks like our system isn't responding correctly right now.  Give it a minute and try again.");
+		form.onFailure ? form.onFailure() : alert("Whoops!  We messed up!  Don't worry, it's not your fault.  It looks like our system isn't responding correctly right now.  Give it a minute and try again.");
 	}
 	function onRedirect(form, url) {
-		form.onRedirect ? form.onRedirect(url) : window.location = url;
+		form.onRedirect ? form.onRedirect(url) : location = url;
 	}
 	function onInputErrors(form, errors) {
 		if (form.onInputErrors)
