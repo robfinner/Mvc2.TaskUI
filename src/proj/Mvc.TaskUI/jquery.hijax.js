@@ -79,7 +79,7 @@ $(document).ready(function () {
 		return (contentType.indexOf("application/json") < 0) ? responseText : $.parseJSON(responseText);
 	}
 	function onFailure(form) {
-		form.onFailure ? form.onFailure() : alert("Whoops!  We messed up!  Don't worry, it's not your fault.  It looks like our system isn't responding correctly right now.  Give it a minute and try again.");
+		form.onFailure ? form.onFailure() : alert("Whoops!  Something's wrong.  But don't worry, it's not your fault.  It looks like our system isn't responding properly right now.  Give it a minute and try again.");
 	}
 	function onRedirect(form, url) {
 		if (form.onRedirect)
