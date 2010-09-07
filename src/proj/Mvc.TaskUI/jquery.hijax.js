@@ -59,8 +59,8 @@ $(document).ready(function () {
 			}
 		} catch (exception) { retry = true; }
 
-		var maxAttempts = parseInt($(form).attr("attempts") || 3);
-		if (retry && attempt <= maxAttempts) // 3 retries on failure
+		var maxAttempts = parseInt($(form).attr("attempts") || 3) - 1; // 3 retries on failure
+		if (retry && attempt < maxAttempts) 
 			return ajax(form, url, attempt + 1);
 
 		form.requestId = undefined;
