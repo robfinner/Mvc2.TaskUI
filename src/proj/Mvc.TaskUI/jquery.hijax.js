@@ -90,8 +90,11 @@ $(document).ready(function () {
 	}
 	function onInputErrors(form, errors) {
 		if (form.onInputErrors)
-			return form.onInputErrors();
+			return form.onInputErrors(errors, showInputErrors);
 
+		showInputErrors(form, errors);
+	}
+	function showInputErrors(form, errors) {
 		var summary = "";
 		$.each(errors, function () {
 			var element = $(":input[name$=" + this.Property + "]", form);
