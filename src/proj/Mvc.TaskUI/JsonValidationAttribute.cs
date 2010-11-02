@@ -19,7 +19,7 @@
 			base.OnActionExecuted(filterContext);
 
 			var modelState = GetModelState(filterContext.Controller);
-			if (ModelHasErrors(modelState) && filterContext.Result is EmptyResult)
+			if (ModelHasErrors(modelState) && ResultIsEmpty(filterContext.Result))
 				filterContext.Result = new JsonModelErrorResult(modelState);
 		}
 
@@ -30,6 +30,24 @@
 		private static bool ModelHasErrors(ModelStateDictionary modelState)
 		{
 			return null != modelState && !modelState.IsValid;
+		}
+		private static bool ResultIsEmpty(ActionResult result)
+		{
+			if (result == null)
+				return true;
+
+			if (result is EmptyResult)
+				return true;
+
+			var json = result as JsonResult;
+			if (json != null && json.Data == null)
+				return true;
+
+			var content = result as ContentResult;
+			if (null != content && string.IsNullOrEmpty(content.Content))
+				return true;
+
+			return false;
 		}
 	}
 }
