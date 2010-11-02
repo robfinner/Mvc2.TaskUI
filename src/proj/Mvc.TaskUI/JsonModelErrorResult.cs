@@ -1,6 +1,7 @@
 namespace Mvc.TaskUI
 {
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Web.Mvc;
 
 	public class JsonModelErrorResult : JsonResult
@@ -29,13 +30,9 @@ namespace Mvc.TaskUI
 		}
 		private ICollection<ValidationError> GetModelErrors()
 		{
-			var errors = new List<ValidationError>();
-
-			foreach (var item in this.state)
-				foreach (var error in item.Value.Errors)
-					errors.Add(new ValidationError(item.Key, error.ErrorMessage));
-
-			return errors;
+			return (from item in this.state
+			        from error in item.Value.Errors
+			        select new ValidationError(item.Key, error.ErrorMessage)).ToList();
 		}
 	}
 }
