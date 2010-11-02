@@ -89,7 +89,7 @@ $(document).ready(function () {
 			return form.onRedirect(url);
 
 		if (url)
-			location = !window.baseUrl && url.match(/^https?\:/i) ? url : window.baseUrl + url;
+			location = !window._href && url.match(/^https?\:/i) ? url : window._href + url;
 	}
 	function onInputErrors(form, errors) {
 		if (form.onInputErrors)
