@@ -54,8 +54,8 @@ $(document).ready(function () {
 		try {
 			switch (xhr.status) {
 				case 200: form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined; break;
+				case 299: onInputErrors(form, parseResponse(xhr)); break;
 				case 399: onRedirect(form, xhr.getResponseHeader("Location")); break;
-				case 400: onInputErrors(form, parseResponse(xhr)); break;
 				default: retry = true;
 			}
 		} catch (exception) { retry = true; }

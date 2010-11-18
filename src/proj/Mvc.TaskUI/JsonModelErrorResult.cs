@@ -6,7 +6,11 @@ namespace Mvc.TaskUI
 
 	public class JsonModelErrorResult : JsonResult
 	{
-		private const int BadRequestHttpStatusCode = 400;
+		// We originally had specified 400, but IIS7's CustomErrorModule kept intercepting
+		// anything >= 400 and trying to filter and help out.
+		// it's way easier to just pick a new, unused code below 400 rather than fight IIS
+		private const int StatusCode = 299;
+		private const string StatusText = "299 Input Rejected";
 		private readonly ModelStateDictionary state;
 
 		public JsonModelErrorResult(ModelStateDictionary state)
@@ -24,7 +28,8 @@ namespace Mvc.TaskUI
 		private void AppendModelErrrors(ControllerContext context)
 		{
 			this.ContentType = string.Empty; // let the base class append the content type
-			context.HttpContext.Response.StatusCode = BadRequestHttpStatusCode;
+			context.HttpContext.Response.Status = StatusText;
+			context.HttpContext.Response.StatusCode = StatusCode;
 
 			this.Data = this.GetModelErrors();
 		}

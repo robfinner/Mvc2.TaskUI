@@ -4,8 +4,8 @@ namespace Mvc.TaskUI
 
 	public class JavascriptRedirectResult : ActionResult
 	{
-		private const int HttpRedirectStatusCode = 399;
-		private const string HttpRedirectStatus = "399 Javascript Redirect";
+		private const int StatusCode = 399;
+		private const string StatusDescription = "399 Javascript Redirect";
 		private const string LocationHeader = "Location";
 		private readonly string url;
 
@@ -18,8 +18,8 @@ namespace Mvc.TaskUI
 		{
 			var response = context.HttpContext.Response;
 
-			response.Status = HttpRedirectStatus;
-			response.StatusCode = HttpRedirectStatusCode;
+			response.Status = StatusDescription;
+			response.StatusCode = StatusCode;
 			response.AddHeader(LocationHeader, this.url);
 		}
 	}
