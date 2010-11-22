@@ -77,7 +77,7 @@ $(document).ready(function () {
 			return "";
 
 		var contentType = (xhr.getResponseHeader("Content-Type") || "").toLowerCase();
-		return (contentType.indexOf("application/json") < 0) ? responseText : $.parseJSON(responseText);
+		return (contentType.indexOf("application/json") < 0) ? xhr.responseText : $.parseJSON(xhr.responseText);
 	}
 	function onFailure(form) {
 		form.onFailure ? form.onFailure() : alert("Whoops!  Something's wrong.  But don't worry, it's not your fault.  It looks like our system isn't responding properly right now.  Give it a minute and try again.");
