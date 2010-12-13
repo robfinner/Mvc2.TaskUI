@@ -1,6 +1,6 @@
 $(document).ready(function () {
 	$("body").delegate("form.hijax", "submit", function (event) {
-		$event = $.Event(event);
+		var $event = $.Event(event);
 		$event.preventDefault();
 		$event.stopPropagation();
 
