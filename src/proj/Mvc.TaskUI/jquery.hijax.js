@@ -1,8 +1,8 @@
 $(document).ready(function () {
-    $("body").delegate("form.hijax", "submit", function (event) {
-		event = $.Event(event);
-		event.preventDefault();
-		event.stopPropagation();
+	$("body").delegate("form.hijax", "submit", function (event) {
+		$event = $.Event(event);
+		$event.preventDefault();
+		$event.stopPropagation();
 
 		if (this.onSubmit && false === this.onSubmit())
 			return false; // this.onSubmit must explictly return false to stop processing
