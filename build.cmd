@@ -1,5 +1,5 @@
 @echo off
-SET PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\V3.5;
+SET PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\;
 
 if not exist output ( mkdir output )
 

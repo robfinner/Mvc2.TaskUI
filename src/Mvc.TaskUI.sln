@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "proj", "proj", "{8223D0AA-ABA3-4E9A-BBFD-02D0A72A9E2F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C2776D68-194F-4417-86F6-C45220DC12A9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvc.TaskUI", "proj\Mvc.TaskUI\Mvc.TaskUI.csproj", "{A18D78CB-DEBD-46C9-A5A3-B18D3E7D53FD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvc.TaskUI.UnitTests", "tests\Mvc.TaskUI.UnitTests\Mvc.TaskUI.UnitTests.csproj", "{3C643E64-9497-452C-AD19-E9868DAE64F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,16 +15,11 @@ Global
 		{A18D78CB-DEBD-46C9-A5A3-B18D3E7D53FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A18D78CB-DEBD-46C9-A5A3-B18D3E7D53FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A18D78CB-DEBD-46C9-A5A3-B18D3E7D53FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3C643E64-9497-452C-AD19-E9868DAE64F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C643E64-9497-452C-AD19-E9868DAE64F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C643E64-9497-452C-AD19-E9868DAE64F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C643E64-9497-452C-AD19-E9868DAE64F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A18D78CB-DEBD-46C9-A5A3-B18D3E7D53FD} = {8223D0AA-ABA3-4E9A-BBFD-02D0A72A9E2F}
-		{3C643E64-9497-452C-AD19-E9868DAE64F1} = {C2776D68-194F-4417-86F6-C45220DC12A9}
 	EndGlobalSection
 EndGlobal
