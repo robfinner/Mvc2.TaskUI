@@ -35,17 +35,18 @@ $(document).ready(function () {
 		if (form.onStatus)
 			form.onStatus(attempt + 1); // make it a 1-based number
 
-		var $form = $(form);
+		var payload = form.onAjax ? form.onAjax(url, attempt) : undefined;
 
 		$.ajax({
+			url: url,
+			type: form.method || "post",
 			cache: false,
-			data: $form.serialize(),
-			dataType: "text",
-			error: function (xhr) { handle(form, xhr, url, attempt); },
-			success: function (data, status, xhr) { handle(form, xhr, url, attempt); },
+			data: JSON.stringify(payload) || $form.serialize(),
+			dataType: "text", // jQuery won't attempt to parse the server response
+			contentType: payload ? "application/json; charset=utf-8" : undefined,
 			timeout: parseInt($form.attr("timeout") || 3500), // 3.5 seconds
-			type: (form.method || "post"),
-			url: url
+			success: function (data, status, xhr) { handle(form, xhr, url, attempt); },
+			error: function (xhr) { handle(form, xhr, url, attempt); }
 		});
 	}
 	function handle(form, xhr, url, attempt) {
@@ -61,11 +62,11 @@ $(document).ready(function () {
 		} catch (exception) { retry = true; }
 
 		var maxAttempts = parseInt($(form).attr("attempts") || 3) - 1; // 3 retries on failure
-		if (retry && attempt < maxAttempts) 
+		if (retry && attempt < maxAttempts)
 			return ajax(form, url, attempt + 1);
 
 		form.requestId = undefined;
-		
+
 		if (retry)
 			onFailure(form);
 
