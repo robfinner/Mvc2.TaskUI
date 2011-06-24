@@ -43,7 +43,7 @@ $(document).ready(function () {
 			type: payload.method || form.method || "post",
 			cache: payload.cache || $form.attr("cache") || false,
 			timeout: payload.timeout || parseInt($form.attr("timeout") || 4000), // 4 seconds
-			data: payload.data || $form.serialize(),
+			data: JSON.stringify(payload.data) || $form.serialize(),
 			contentType: payload.contentType,
 			dataType: payload.dataType || "text", // jQuery won't attempt to parse the server response
 			success: function (data, status, xhr) { handle(form, xhr, url, attempt); },
