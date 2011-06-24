@@ -55,9 +55,15 @@ $(document).ready(function () {
 
 		try {
 			switch (xhr.status) {
-				case 200: form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined; break;
-				case 299: onInputErrors(form, parseResponse(xhr)); break; // // IIS7 throws fits on HTTP 4xx.
-				case 399: onRedirect(form, xhr.getResponseHeader("Location")); break;
+				case 200: case 201: case 202: case 203: case 204:
+				case 205: form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined; break;
+				
+				case 399: onRedirect(form, xhr.getResponseHeader("Location")); break; // client-side redirect
+				
+				case 299: // IIS7 throws fits on HTTP 4xx, so allow 299 to be a substitute (for now)
+				case 400: onInputErrors(form, parseResponse(xhr)); break;
+				
+				case 401: onUnauthorized(form, xhr); break;
 				default: retry = true;
 			}
 		} catch (exception) { retry = true; }
@@ -113,5 +119,11 @@ $(document).ready(function () {
 			$this = $(this);
 			$this.removeClass("input-validation-error").attr("title", $this.attr("_title"));
 		});
+	}
+	function onUnauthorized(form, xhr) {
+		if (form.onUnauthorized)
+			return form.onUnauthorized(xhr);
+
+		alert("Whoops! It looks like your session expired.  You will need to login again before you can continue.");
 	}
 });
