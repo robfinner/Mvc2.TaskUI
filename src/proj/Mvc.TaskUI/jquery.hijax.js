@@ -18,33 +18,34 @@ $(document).ready(function () {
 		this.hideInputErrors ? this.hideInputErrors() : hideInputErrors(this);
 
 		var url = (this.action || "").toString().replace(/^(https?\:)?(.*)$/i, "$2");
-		url += (url.indexOf("?") < 0 ? "?" : "&") + "RequestId=" + this.requestId;
-		ajax(this, url, 0);
-
-		return false;
+		url += (url.indexOf("?") < 0 ? "?" : "&") + "hijax_id=" + this.requestId;
+		return ajax(this, url, 0) || false;
 	});
 
 	function newGuid() {
 		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
 			.replace(/[xy]/g, function (c) {
-				var r = Math.random() * 16 | 0, v = c == "x" ? r : r & 0x3 | 0x8;
+				var r = Math.random() * 16 | 0, v = c === "x" ? r : r & 0x3 | 0x8;
 				return v.toString(16);
 			});
 	}
 	function ajax(form, url, attempt) {
-		if (form.onStatus)
-			form.onStatus(attempt + 1); // make it a 1-based number
+		if (form.onStatus && form.onStatus(attempt + 1) === false)
+			return false;
 
-		var payload = form.onAjax ? form.onAjax(url, attempt) : undefined;
+		var $form = $(form);
+		var payload = (form.onBeforeAjax ? form.onBeforeAjax(url, attempt) : undefined) || {};
+		if (payload.data && payload.contentType === undefined)
+			payload.contentType = "application/json; charset=utf-8";
 
 		$.ajax({
-			url: url,
-			type: form.method || "post",
-			cache: false,
-			data: JSON.stringify(payload) || $form.serialize(),
-			dataType: "text", // jQuery won't attempt to parse the server response
-			contentType: payload ? "application/json; charset=utf-8" : undefined,
-			timeout: parseInt($form.attr("timeout") || 3500), // 3.5 seconds
+			url: payload.url || url,
+			type: payload.method || form.method || "post",
+			cache: payload.cache || $form.attr("cache") || false,
+			timeout: payload.timeout || parseInt($form.attr("timeout") || 4000), // 4 seconds
+			data: payload.data || $form.serialize(),
+			contentType: payload.contentType,
+			dataType: payload.dataType || "text", // jQuery won't attempt to parse the server response
 			success: function (data, status, xhr) { handle(form, xhr, url, attempt); },
 			error: function (xhr) { handle(form, xhr, url, attempt); }
 		});
@@ -55,7 +56,7 @@ $(document).ready(function () {
 		try {
 			switch (xhr.status) {
 				case 200: form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined; break;
-				case 299: onInputErrors(form, parseResponse(xhr)); break;
+				case 299: onInputErrors(form, parseResponse(xhr)); break; // // IIS7 throws fits on HTTP 4xx.
 				case 399: onRedirect(form, xhr.getResponseHeader("Location")); break;
 				default: retry = true;
 			}
