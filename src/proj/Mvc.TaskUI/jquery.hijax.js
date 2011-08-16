@@ -55,8 +55,11 @@ $(document).ready(function () {
 
 		try {
 			switch (xhr.status) {
-				case 200: case 201: case 202: case 203: case 204:
-				case 205: form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined; break;
+				case 200: case 201: case 202: case 206: case 207:
+				case 203: form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined; break;
+
+				case 204:
+				case 205: form.onSuccess ? form.onSuccess('') : undefined; break;
 				
 				case 399: onRedirect(form, xhr.getResponseHeader("Location")); break; // client-side redirect
 				
