@@ -55,21 +55,27 @@ $(document).ready(function () {
 
 		try {
 			switch (xhr.status) {
-				case 200: case 201: case 202: case 206: case 207:
-				case 203: form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined; break;
-
+				case 200:
+				case 201:
+				case 202:
+				case 203:
 				case 204:
-				case 205: form.onSuccess ? form.onSuccess('') : undefined; break;
-				
+				case 205:
+				case 206:
+				case 207: form.onSuccess ? form.onSuccess(parseResponse(xhr)) : undefined; break;
+
 				case 399: onRedirect(form, xhr.getResponseHeader("Location")); break; // client-side redirect
-				
+
 				case 299: // IIS7 throws fits on HTTP 4xx, so allow 299 to be a substitute (for now)
 				case 400: onInputErrors(form, parseResponse(xhr)); break;
-				
+
 				case 401: onUnauthorized(form, xhr); break;
 				default: retry = true;
 			}
-		} catch (exception) { retry = true; }
+		} catch (exception) {
+			if (console && console.log)
+				console.log(exception);
+		}
 
 		var maxAttempts = parseInt($(form).attr("attempts") || 3) - 1; // 3 retries on failure
 		if (retry && attempt < maxAttempts)
